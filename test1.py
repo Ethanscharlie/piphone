@@ -1,27 +1,33 @@
+testing = True
+
 import time
 from threading import Thread
 from datetime import datetime
-from RPLCD.i2c import CharLCD
-from inputs import get_gamepad
+from inputs import get_gamepad, get_key, UnpluggedError
 
 COLS = 16
 ROWS = 2
 
-lcd = CharLCD('PCF8574', 0x27, cols=COLS, rows=ROWS)
+lcd = None
+if not testing:
+    from RPLCD.i2c import CharLCD
+
+    lcd = CharLCD("PCF8574", 0x27, cols=COLS, rows=ROWS)
+
 
 class Menu:
     def __init__(self):
         self.menu = {
-            '$Rec': { 'Add Record': '' },  
-            'Call': {}, 
-            'SMS': {}, 
-            'Mus': {}, 
-            'AudBk': {}, 
-            'Rss': {}
+            "$Rec": {"Add Record": ""},
+            "Call": {},
+            "SMS": {},
+            "Mus": {},
+            "AudBk": {},
+            "Rss": {},
         }
 
         self.selection = 0
-        self.menu_selection = ''
+        self.menu_selection = ""
 
         self.update_display()
 
@@ -36,7 +42,7 @@ class Menu:
     def next(self):
         output_menu = self.get_menu_options()
         self.selection += 1
-        if (self.selection >= len(output_menu)):
+        if self.selection >= len(output_menu):
             self.selection = 0
 
         self.update_display()
@@ -44,13 +50,13 @@ class Menu:
     def back(self):
         output_menu = self.get_menu_options()
         self.selection -= 1
-        if (self.selection < 0):
+        if self.selection < 0:
             self.selection = len(output_menu) - 1
 
         self.update_display()
 
     def go_home(self):
-        self.menu_selection = ''
+        self.menu_selection = ""
         self.update_display()
 
     def action(self):
@@ -64,16 +70,21 @@ class Menu:
 
         full_str = " ".join(output_menu)
 
-        if (len(full_str) > COLS): 
-            i = full_str.index('[')
-            full_str = full_str[i:i+COLS-1] + ">"
+        if len(full_str) > COLS:
+            i = full_str.index("[")
+            full_str = full_str[i : i + COLS - 1] + ">"
 
-        status_bar = time.strftime("%H:%M", time.localtime());
+        status_bar = time.strftime("%H:%M", time.localtime())
         status_bar += int(COLS - len(status_bar) - 3) * " "
         status_bar += "99%"
 
-        lcd.clear()
-        lcd.write_string(full_str + "\n\r" + status_bar)
+        output = full_str + "\n\r" + status_bar
+        print("\n\n\n\n")
+        print(output)
+
+        if not testing:
+            lcd.clear()
+            lcd.write_string(output)
 
     def status_refresh(self):
         while True:
@@ -88,18 +99,33 @@ def main():
     status_thread.start()
 
     while True:
-        events = get_gamepad()
+        try:
+            events = get_gamepad()
+        except UnpluggedError:
+            events = get_key()
+
         for event in events:
-            if (event.state != 0):
-                if (event.code == "ABS_HAT0X" and event.state == 1):
+            if event.state != 0:
+                if (
+                    event.code == "ABS_HAT0X"
+                    and event.state == 1
+                    or event.code == "KEY_RIGHT"
+                ):
                     menu.next()
-                if (event.code == "ABS_HAT0X" and event.state == -1):
+                if (
+                    event.code == "ABS_HAT0X"
+                    and event.state == -1
+                    or event.code == "KEY_LEFT"
+                ):
                     menu.back()
-                if (event.code == "BTN_SOUTH"):
+
+                if event.code == "BTN_SOUTH" or event.code == "KEY_SPACE":
                     menu.action()
-                if (event.code == "BTN_EAST"):
+
+                if event.code == "BTN_EAST" or event.code == "KEY_BACKSPACE":
                     menu.go_home()
 
-    status_thread.join()        
+    status_thread.join()
+
 
 main()
