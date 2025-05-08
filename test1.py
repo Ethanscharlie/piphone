@@ -71,10 +71,10 @@ def main():
     while True:
         events = get_gamepad()
         for event in events:
-            if (event.state):
-                if (event.code == "BTN_EAST"):
+            if (event.state != 0):
+                if (event.code == "ABS_HAT0X" and event.state == 1):
                     menu.next()
-                elif (event.code == "BTN_NORTH"):
+                if (event.code == "ABS_HAT0X" and event.state == -1):
                     menu.back()
 
     status_thread.join()        
