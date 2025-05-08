@@ -11,35 +11,54 @@ lcd = CharLCD('PCF8574', 0x27, cols=COLS, rows=ROWS)
 
 class Menu:
     def __init__(self):
-        self.menu = [
-            'Call', 
-            'SMS', 
-            'Mus', 
-            'AudBk', 
-            '$Rec', 
-            'Rss'
-        ]
+        self.menu = {
+            '$Rec': { 'Add Record': '' },  
+            'Call': {}, 
+            'SMS': {}, 
+            'Mus': {}, 
+            'AudBk': {}, 
+            'Rss': {}
+        }
 
         self.selection = 0
+        self.menu_selection = ''
 
         self.update_display()
 
+    def get_menu_options(self):
+        output_menu = list(self.menu.keys())
+
+        if self.menu_selection:
+            output_menu = list(self.menu[self.menu_selection].keys())
+
+        return output_menu
+
     def next(self):
+        output_menu = self.get_menu_options()
         self.selection += 1
-        if (self.selection >= len(self.menu)):
+        if (self.selection >= len(output_menu)):
             self.selection = 0
 
         self.update_display()
 
     def back(self):
+        output_menu = self.get_menu_options()
         self.selection -= 1
         if (self.selection < 0):
-            self.selection = len(self.menu) - 1
+            self.selection = len(output_menu) - 1
 
         self.update_display()
 
+    def go_home(self):
+        self.menu_selection = ''
+        self.update_display()
+
+    def action(self):
+        self.menu_selection = list(self.menu.keys())[self.selection]
+        self.update_display()
+
     def update_display(self):
-        output_menu = self.menu.copy()
+        output_menu = self.get_menu_options()
         output_menu.append("...")
         output_menu[self.selection] = f"[{output_menu[self.selection]}]"
 
@@ -76,6 +95,10 @@ def main():
                     menu.next()
                 if (event.code == "ABS_HAT0X" and event.state == -1):
                     menu.back()
+                if (event.code == "BTN_SOUTH"):
+                    menu.action()
+                if (event.code == "BTN_EAST"):
+                    menu.go_home()
 
     status_thread.join()        
 
