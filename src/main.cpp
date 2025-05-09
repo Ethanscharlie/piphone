@@ -40,10 +40,13 @@ public:
 
   void render() override {
     std::string str;
+    int indexAtSelection = 0;
+
     for (int i = 0; i < subnodes.size(); i++) {
       auto &subnodePtr = subnodes[i];
 
       if (selection == i) {
+        indexAtSelection = str.size();
         str += "[" + subnodePtr->name + "]";
       } else {
         str += subnodePtr->name;
@@ -53,8 +56,10 @@ public:
     }
     str += "...";
 
+    std::string outputStr = str.substr(indexAtSelection, 16);
+
     std::cout << "\n\n";
-    std::cout << str << "\n\n";
+    std::cout << outputStr << "\n\n";
   }
 
   void right() override {
@@ -83,6 +88,9 @@ int main() {
       std::make_unique<GroupNode>("", nullptr);
   homeNode->addNode(std::make_unique<LabelNode>("One", homeNode.get()));
   homeNode->addNode(std::make_unique<LabelNode>("Two", homeNode.get()));
+  homeNode->addNode(std::make_unique<LabelNode>("Trhee", homeNode.get()));
+  homeNode->addNode(std::make_unique<LabelNode>("Four", homeNode.get()));
+  homeNode->addNode(std::make_unique<LabelNode>("Five", homeNode.get()));
 
   Node *currentParentNode = homeNode.get();
   currentParentNode->render();
