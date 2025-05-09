@@ -1,8 +1,17 @@
-cmake_minimum_required(VERSION 3.6)
-set(CMAKE_CXX_STANDARD 11)
+cmake_minimum_required(VERSION 3.18)
 
-project(piphone)
+project(piphone CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+find_package(SDL3 REQUIRED)
 
 add_executable(piphone 
-	src/main.cpp
+  src/main.cpp
+)
+
+target_link_libraries(piphone PRIVATE 
+  SDL3::SDL3
 )
