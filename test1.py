@@ -1,4 +1,4 @@
-testing = True
+testing = False
 
 import time
 from threading import Thread
@@ -15,13 +15,22 @@ if not testing:
     lcd = CharLCD("PCF8574", 0x27, cols=COLS, rows=ROWS)
 
 
+def toggle_music() -> None:
+    print("Toggle Music") 
+
+
+class MenuNode:
+    def __init__(self, name: str, point):
+        self.name = name
+        self.point = point
+
 class Menu:
     def __init__(self):
         self.menu = {
             "$Rec": {"Add Record": ""},
             "Call": {},
             "SMS": {},
-            "Mus": {},
+            "Mus": { "Toggle": (lambda: toggle_music())},
             "AudBk": {},
             "Rss": {},
         }
@@ -57,10 +66,16 @@ class Menu:
 
     def go_home(self):
         self.menu_selection = ""
+        self.selection = 0
         self.update_display()
 
     def action(self):
-        self.menu_selection = list(self.menu.keys())[self.selection]
+        key = list(self.menu.keys())[self.selection]
+
+        print(type(self.menu[key]))
+        self.menu_selection = key
+        self.selection = 0
+
         self.update_display()
 
     def update_display(self):
