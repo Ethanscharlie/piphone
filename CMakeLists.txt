@@ -12,6 +12,10 @@ add_executable(piphone
   src/main.cpp
 )
 
+target_include_directories(piphone PRIVATE
+  src
+)
+
 target_link_libraries(piphone PRIVATE 
   SDL3::SDL3
 )
