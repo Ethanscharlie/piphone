@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Node.hpp"
+#include "lcd.hpp"
 
 class GroupNode : public Node {
   std::vector<std::unique_ptr<Node>> subnodes;
@@ -46,6 +47,7 @@ public:
 
     std::cout << "\n\n";
     std::cout << outputStr << "\n\n";
+    LCD::clearAndSet(outputStr, "");
   }
 
   void right() override {
