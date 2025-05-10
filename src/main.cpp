@@ -32,10 +32,31 @@ int main() {
         "Skip", musicGroupNode.get(), []() { system("mpc next"); }));
   }
 
+  auto ytGroupNode =
+      std::make_unique<GroupNode>("yt_Test", homeNode.get(), &currentParentNode);
+  {
+    ytGroupNode->addNode(std::make_unique<FunctionNode>(
+        "Dwnld&Ply", musicGroupNode.get(), []() { 
+		const std::string testURL = "https://www.youtube.com/watch?v=r8AEUP5IyPc";
+		const std::string ytdlpCommand = "/usr/local/bin/yt-dlp -x -o \"~/yt/%(title)s.%(ext)s\" '" + testURL + "'";
+
+		system("mpc clear"); 
+
+		std::cout << "Downloading yt content...\n";
+		LCD::clearAndSet("Downloading...", "");
+		system(ytdlpCommand.c_str()); 
+		std::cout << "Finished Downloading yt content.\n";
+		LCD::clearAndSet("Finished", "");
+
+		system("mpc update"); 
+		system("sleep 1"); 
+		system("mpc add yt"); 
+		system("mpc play"); 
+	}));
+  }
+
   homeNode->addNode(std::move(musicGroupNode));
-  homeNode->addNode(std::make_unique<LabelNode>("SMS", homeNode.get()));
-  homeNode->addNode(std::make_unique<LabelNode>("RSS", homeNode.get()));
-  homeNode->addNode(std::make_unique<LabelNode>("$Rec", homeNode.get()));
+  homeNode->addNode(std::move(ytGroupNode));
 
   currentParentNode = homeNode.get();
   currentParentNode->render();
