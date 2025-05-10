@@ -85,6 +85,4 @@ void LCD::clearAndSet(std::string l1, std::string l2) {
   for (int i = 0; msg[i]; i++) {
     lcd_write_data(msg[i]);
   }
-
-  close(i2c_fd);
 }

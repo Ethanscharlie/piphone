@@ -12,6 +12,10 @@
 #include "nodes/LabelNode.hpp"
 
 int main() {
+  // Init LCD Panel
+  LCD::init();
+  LCD::clearAndSet("Loading", "");
+
   GroupNode *currentParentNode = nullptr;
 
   auto homeNode =
@@ -35,10 +39,6 @@ int main() {
 
   currentParentNode = homeNode.get();
   currentParentNode->render();
-
-  // Init LCD Panel
-  LCD::init();
-  LCD::clearAndSet("Hello World", "");
 
   // Init our joystick
   if (SDL_Init(SDL_INIT_JOYSTICK) < 0) {
