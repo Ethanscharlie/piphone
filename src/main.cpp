@@ -1,6 +1,6 @@
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_events.h>
-#include <SDL3/SDL_joystick.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_joystick.h>
 #include <csignal>
 #include <cstdlib>
 #include <iostream>
@@ -35,22 +35,15 @@ int main() {
   currentParentNode = homeNode.get();
   currentParentNode->render();
 
-  if (!SDL_Init(SDL_INIT_JOYSTICK)) {
+  if (SDL_Init(SDL_INIT_JOYSTICK) < 0) {
     std::cout << "Error: " << SDL_GetError() << "\n";
   }
-
-  if (!SDL_HasJoystick()) {
-    throw std::logic_error("Joystick not connected");
-  }
-
-  SDL_JoystickID joystickID = SDL_GetJoysticks(NULL)[0];
-  SDL_Joystick *joystick = SDL_OpenJoystick(joystickID);
 
   while (true) {
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
       switch (e.type) {
-      case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+      case SDL_JOYBUTTONDOWN:
         switch (e.jbutton.button) {
         case 0:
           currentParentNode->getSelectedNode()->action();
