@@ -8,6 +8,7 @@
 #include <stdexcept>
 
 #include "lcd.hpp"
+#include "nodes/FunctionNode.hpp"
 #include "nodes/GroupNode.hpp"
 #include "nodes/LabelNode.hpp"
 
@@ -24,12 +25,11 @@ int main() {
   auto musicGroupNode =
       std::make_unique<GroupNode>("Mus", homeNode.get(), &currentParentNode);
   {
-    musicGroupNode->addNode(
-        std::make_unique<LabelNode>("Pause", musicGroupNode.get()));
-    musicGroupNode->addNode(
-        std::make_unique<LabelNode>("Play", musicGroupNode.get()));
-    musicGroupNode->addNode(
-        std::make_unique<LabelNode>("Skip", musicGroupNode.get()));
+    musicGroupNode->addNode(std::make_unique<FunctionNode>(
+        "Toggle", musicGroupNode.get(), []() { system("mpc toggle"); }));
+
+    musicGroupNode->addNode(std::make_unique<FunctionNode>(
+        "Skip", musicGroupNode.get(), []() { system("mpc next"); }));
   }
 
   homeNode->addNode(std::move(musicGroupNode));
