@@ -7,6 +7,7 @@
 #include <memory>
 #include <stdexcept>
 
+#include "lcd.hpp"
 #include "nodes/GroupNode.hpp"
 #include "nodes/LabelNode.hpp"
 
@@ -35,6 +36,9 @@ int main() {
   currentParentNode = homeNode.get();
   currentParentNode->render();
 
+  LCD::init();
+  LCD::clearAndSet("Hello World", "");
+
   if (SDL_Init(SDL_INIT_JOYSTICK) < 0) {
     std::cout << "Error: " << SDL_GetError() << "\n";
   }
@@ -44,6 +48,7 @@ int main() {
     while (SDL_PollEvent(&e)) {
       switch (e.type) {
       case SDL_JOYBUTTONDOWN:
+	std::cout << "JOYBUTTONDOWN\n";
         switch (e.jbutton.button) {
         case 0:
           currentParentNode->getSelectedNode()->action();

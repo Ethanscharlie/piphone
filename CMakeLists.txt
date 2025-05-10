@@ -10,6 +10,7 @@ find_package(SDL2 REQUIRED)
 
 add_executable(piphone 
   src/main.cpp
+  src/lcd.cpp
 )
 
 target_include_directories(piphone PRIVATE
