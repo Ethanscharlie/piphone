@@ -23,13 +23,16 @@ int main() {
       std::make_unique<GroupNode>("Home", nullptr, &currentParentNode);
 
   auto musicGroupNode =
-      std::make_unique<GroupNode>("Mus", homeNode.get(), &currentParentNode);
+      std::make_unique<GroupNode>("Media", homeNode.get(), &currentParentNode);
   {
     musicGroupNode->addNode(std::make_unique<FunctionNode>(
         "Toggle", musicGroupNode.get(), []() { system("mpc toggle"); }));
 
     musicGroupNode->addNode(std::make_unique<FunctionNode>(
         "Skip", musicGroupNode.get(), []() { system("mpc next"); }));
+
+    musicGroupNode->addNode(std::make_unique<FunctionNode>(
+        "All_Music", musicGroupNode.get(), []() { system("mpc clear; mpc add Music; mpc shuffle; mpc play"); }));
   }
 
   auto ytGroupNode =
