@@ -31,31 +31,36 @@ int main() {
     musicGroupNode->addNode(std::make_unique<FunctionNode>(
         "Skip", musicGroupNode.get(), []() { system("mpc next"); }));
 
-    musicGroupNode->addNode(std::make_unique<FunctionNode>(
-        "All_Music", musicGroupNode.get(), []() { system("mpc clear; mpc add Music; mpc shuffle; mpc play"); }));
+    musicGroupNode->addNode(
+        std::make_unique<FunctionNode>("All_Music", musicGroupNode.get(), []() {
+          system("mpc clear; mpc add Music; mpc shuffle; mpc play");
+        }));
   }
 
-  auto ytGroupNode =
-      std::make_unique<GroupNode>("yt_Test", homeNode.get(), &currentParentNode);
+  auto ytGroupNode = std::make_unique<GroupNode>("yt_Test", homeNode.get(),
+                                                 &currentParentNode);
   {
-    ytGroupNode->addNode(std::make_unique<FunctionNode>(
-        "Dwnld&Ply", musicGroupNode.get(), []() { 
-		const std::string testURL = "https://www.youtube.com/watch?v=r8AEUP5IyPc";
-		const std::string ytdlpCommand = "/usr/local/bin/yt-dlp -x -o \"~/yt/%(title)s.%(ext)s\" '" + testURL + "'";
+    ytGroupNode->addNode(
+        std::make_unique<FunctionNode>("Dwnld&Ply", musicGroupNode.get(), []() {
+          const std::string testURL =
+              "https://www.youtube.com/watch?v=r8AEUP5IyPc";
+          const std::string ytdlpCommand =
+              "/usr/local/bin/yt-dlp -x -o \"~/yt/%(title)s.%(ext)s\" '" +
+              testURL + "'";
 
-		system("mpc clear"); 
+          system("mpc clear");
 
-		std::cout << "Downloading yt content...\n";
-		LCD::clearAndSet("Downloading...", "");
-		system(ytdlpCommand.c_str()); 
-		std::cout << "Finished Downloading yt content.\n";
-		LCD::clearAndSet("Finished", "");
+          std::cout << "Downloading yt content...\n";
+          LCD::clearAndSet("Downloading...", "");
+          system(ytdlpCommand.c_str());
+          std::cout << "Finished Downloading yt content.\n";
+          LCD::clearAndSet("Finished", "");
 
-		system("mpc update"); 
-		system("sleep 1"); 
-		system("mpc add yt"); 
-		system("mpc play"); 
-	}));
+          system("mpc update");
+          system("sleep 1");
+          system("mpc add yt");
+          system("mpc play");
+        }));
   }
 
   homeNode->addNode(std::move(musicGroupNode));
