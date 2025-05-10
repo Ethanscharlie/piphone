@@ -74,6 +74,7 @@ int main() {
           break;
         case 3:
           currentParentNode = homeNode.get();
+          currentParentNode->render();
           break;
         }
         break;
