@@ -60,8 +60,15 @@ int main() {
       switch (e.type) {
       case SDL_JOYBUTTONDOWN:
         switch (e.jbutton.button) {
-        case 0:
-          currentParentNode->getSelectedNode()->action();
+        case 0: {
+          auto *node = currentParentNode->getSelectedNode();
+          if (node) {
+            node->action();
+          } else {
+            currentParentNode = homeNode.get();
+          }
+        }
+
           currentParentNode->render();
           break;
         case 1:

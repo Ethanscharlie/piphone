@@ -23,25 +23,36 @@ public:
 
   void action() override { *currentParentNode = this; }
 
-  Node *getSelectedNode() { return subnodes[selection].get(); }
+  Node *getSelectedNode() {
+    if (selection == -1) {
+      return nullptr;
+    }
+
+    return subnodes[selection].get();
+  }
 
   void render() override {
     std::string str;
-    int indexAtSelection = 0;
+    int indexAtSelection = -1;
 
-    for (int i = 0; i < subnodes.size(); i++) {
-      auto &subnodePtr = subnodes[i];
+    for (int i = -1; i < subnodes.size(); i++) {
+      std::string name = "..";
+
+      if (i != -1) {
+        auto &subnodePtr = subnodes[i];
+        name = subnodePtr->name;
+      }
 
       if (selection == i) {
         indexAtSelection = str.size();
-        str += "[" + subnodePtr->name + "]";
+        str += "[" + name + "]";
       } else {
-        str += subnodePtr->name;
+        str += name;
       }
 
       str += " ";
     }
-    str += "...";
+    str += ">";
 
     std::string outputStr = str.substr(indexAtSelection, 16);
 
@@ -53,13 +64,13 @@ public:
   void right() override {
     selection += 1;
     if (selection >= subnodes.size()) {
-      selection = 0;
+      selection = -1;
     }
   }
 
   void left() override {
     selection -= 1;
-    if (selection < 0) {
+    if (selection < -1) {
       selection = subnodes.size() - 1;
     }
   }
