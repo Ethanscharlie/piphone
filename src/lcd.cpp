@@ -80,6 +80,14 @@ void LCD::init() {
 }
 
 void LCD::clearAndSet(std::string l1, std::string l2) {
+  if (l1.size() > 16) {
+    l1 = l1.substr(0, 16);
+  }
+
+  while (l1.size() < 16) {
+    l1 += " ";
+  }
+
   lcd_write_cmd(0x80); // Set cursor to first line
   const char *msg = l1.c_str();
   for (int i = 0; msg[i]; i++) {
