@@ -9,17 +9,20 @@
 class GroupNode : public Node {
   std::vector<std::unique_ptr<Node>> subnodes;
   int selection = 0;
-  Node **currentParentNode;
+  GroupNode **currentParentNode;
 
 public:
-  GroupNode(const std::string &name, Node *parent, Node **currentParentNode)
+  GroupNode(const std::string &name, Node *parent,
+            GroupNode **currentParentNode)
       : Node(name, parent), currentParentNode(currentParentNode) {}
 
   void addNode(std::unique_ptr<Node> node) {
     subnodes.push_back(std::move(node));
   }
 
-  void action() override { *currentParentNode = subnodes[selection].get(); }
+  void action() override { *currentParentNode = this; }
+
+  Node *getSelectedNode() { return subnodes[selection].get(); }
 
   void render() override {
     std::string str;

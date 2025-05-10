@@ -11,7 +11,7 @@
 #include "nodes/LabelNode.hpp"
 
 int main() {
-  Node *currentParentNode = nullptr;
+  GroupNode *currentParentNode = nullptr;
 
   auto homeNode =
       std::make_unique<GroupNode>("Home", nullptr, &currentParentNode);
@@ -28,10 +28,9 @@ int main() {
   }
 
   homeNode->addNode(std::move(musicGroupNode));
-  homeNode->addNode(std::make_unique<LabelNode>("Two", homeNode.get()));
-  homeNode->addNode(std::make_unique<LabelNode>("Trhee", homeNode.get()));
-  homeNode->addNode(std::make_unique<LabelNode>("Four", homeNode.get()));
-  homeNode->addNode(std::make_unique<LabelNode>("Five", homeNode.get()));
+  homeNode->addNode(std::make_unique<LabelNode>("SMS", homeNode.get()));
+  homeNode->addNode(std::make_unique<LabelNode>("RSS", homeNode.get()));
+  homeNode->addNode(std::make_unique<LabelNode>("$Rec", homeNode.get()));
 
   currentParentNode = homeNode.get();
   currentParentNode->render();
@@ -54,7 +53,7 @@ int main() {
       case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
         switch (e.jbutton.button) {
         case 0:
-          currentParentNode->action();
+          currentParentNode->getSelectedNode()->action();
           currentParentNode->render();
           break;
         case 1:
