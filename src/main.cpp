@@ -36,11 +36,22 @@ int main() {
   currentParentNode = homeNode.get();
   currentParentNode->render();
 
+  // Init LCD Panel
   LCD::init();
   LCD::clearAndSet("Hello World", "");
 
+  // Init our joystick
   if (SDL_Init(SDL_INIT_JOYSTICK) < 0) {
     std::cout << "Error: " << SDL_GetError() << "\n";
+  }
+
+  if (SDL_NumJoysticks() < 1) {
+    printf("Warning: No joysticks connected!\n");
+  } else {
+    if (SDL_JoystickOpen(0) == NULL) {
+      printf("Warning: Unable to open game controller! SDL Error: %s\n",
+             SDL_GetError());
+    }
   }
 
   while (true) {
@@ -48,7 +59,6 @@ int main() {
     while (SDL_PollEvent(&e)) {
       switch (e.type) {
       case SDL_JOYBUTTONDOWN:
-	std::cout << "JOYBUTTONDOWN\n";
         switch (e.jbutton.button) {
         case 0:
           currentParentNode->getSelectedNode()->action();
