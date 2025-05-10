@@ -16,6 +16,7 @@ void downloadVideo(std::string url) {
   const std::string ytdlpCommand =
       "/usr/local/bin/yt-dlp -x -o \"~/yt/%(title)s.%(ext)s\" '" + url + "'";
 
+  system("rm -r ~/yt/*");
   system("mpc clear");
 
   std::cout << "Downloading yt content...\n";
