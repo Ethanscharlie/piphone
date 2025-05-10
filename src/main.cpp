@@ -12,6 +12,24 @@
 #include "nodes/GroupNode.hpp"
 #include "nodes/LabelNode.hpp"
 
+void downloadVideo(std::string url) {
+  const std::string ytdlpCommand =
+      "/usr/local/bin/yt-dlp -x -o \"~/yt/%(title)s.%(ext)s\" '" + url + "'";
+
+  system("mpc clear");
+
+  std::cout << "Downloading yt content...\n";
+  LCD::clearAndSet("Downloading...", "");
+  system(ytdlpCommand.c_str());
+  std::cout << "Finished Downloading yt content.\n";
+  LCD::clearAndSet("Finished", "");
+
+  system("mpc update");
+  system("sleep 1");
+  system("mpc add yt");
+  system("mpc play");
+}
+
 int main() {
   // Init LCD Panel
   LCD::init();
@@ -41,25 +59,15 @@ int main() {
                                                  &currentParentNode);
   {
     ytGroupNode->addNode(
-        std::make_unique<FunctionNode>("Dwnld&Ply", musicGroupNode.get(), []() {
-          const std::string testURL =
-              "https://www.youtube.com/watch?v=r8AEUP5IyPc";
-          const std::string ytdlpCommand =
-              "/usr/local/bin/yt-dlp -x -o \"~/yt/%(title)s.%(ext)s\" '" +
-              testURL + "'";
+        std::make_unique<FunctionNode>("Nyon_Cat", musicGroupNode.get(), []() {
+          downloadVideo("https://www.youtube.com/watch?v=r8AEUP5IyPc");
+        }));
 
-          system("mpc clear");
-
-          std::cout << "Downloading yt content...\n";
-          LCD::clearAndSet("Downloading...", "");
-          system(ytdlpCommand.c_str());
-          std::cout << "Finished Downloading yt content.\n";
-          LCD::clearAndSet("Finished", "");
-
-          system("mpc update");
-          system("sleep 1");
-          system("mpc add yt");
-          system("mpc play");
+    ytGroupNode->addNode(std::make_unique<FunctionNode>(
+        "Banana_Phone", musicGroupNode.get(), []() {
+          downloadVideo("https://www.youtube.com/"
+                        "watch?v=j5C6X9vOEkU&list="
+                        "PLN7svyn8WVPDx0ag1pHCADlvvwAJy7bub&index=37");
         }));
   }
 
