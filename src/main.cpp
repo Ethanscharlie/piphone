@@ -65,9 +65,7 @@ int main() {
 
     ytGroupNode->addNode(std::make_unique<FunctionNode>(
         "Banana_Phone", musicGroupNode.get(), []() {
-          downloadVideo("https://www.youtube.com/"
-                        "watch?v=j5C6X9vOEkU&list="
-                        "PLN7svyn8WVPDx0ag1pHCADlvvwAJy7bub&index=37");
+          downloadVideo("https://www.youtube.com/watch?v=j5C6X9vOEkU");
         }));
   }
 
